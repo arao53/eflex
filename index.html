@@ -117,6 +117,7 @@
     color: var(--ink-soft);
     max-width: 620px;
     margin: 0;
+    text-align: center;
   }
   .word-flip {
     display: inline-block;
@@ -125,6 +126,11 @@
     vertical-align: bottom;
     height: 1.3em;
     min-width: 2em;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0 6px;
+    box-shadow: 0 1px 4px rgba(10,26,47,0.07);
   }
   .word-flip-inner {
     display: flex;
@@ -354,7 +360,7 @@
       <span class="word-flip" id="flip1"><span class="word-flip-inner"></span></span>
       your
       <span class="word-flip" id="flip2"><span class="word-flip-inner"></span></span>
-      plant for volatility.
+      facility to adapt to time&#8209;varying electricity prices and product volatility.
     </p>
   </header>
 
@@ -395,48 +401,65 @@
 </script>
 <script>
   (function() {
-    var words1 = ['Orchestrate', 'Design', 'Operate', 'Plan', 'Coordinate'];
-    var words2 = ['desalination', 'paper pulping', 'soda production', 'chemical manufacturing', 'electrolysis'];
+    var words1 = ['Orchestrate', 'Design', 'Operate', 'Plan', 'Coordinate', 'Optimize', 'Site'];
+    var words2 = [
+      'desalination', 'chlor-alkali', 'green hydrogen', 'water treatment',
+      'caustic soda', 'brine electrolysis', 'aluminum smelting', 'zinc electrowinning',
+      'copper refining', 'lithium refining', 'semiconductor fabrication', 'wastewater treatment',
+      'biogas generation', 'carbon capture', 'paper pulping', 'textile dyeing',
+      'dairy processing', 'sugar refining', 'beer brewing', 'juice processing',
+      'seafood processing', 'starch processing', 'edible oil refining',
+      'pharmaceutical', 'chemical manufacturing', 'soda ash',
+      'sodium hypochlorite', 'oxygen generation', 'nitrogen generation', 'ozone generation',
+      'electroplating', 'fuel cell', 'electrolysis', 'hydrogen peroxide',
+      'seawater electrolysis', 'CO₂ electrolysis', 'iron ore processing'
+    ];
 
     function buildFlip(el, words) {
       var inner = el.querySelector('.word-flip-inner');
-      // duplicate first word at end for seamless loop
-      var all = words.concat([words[0]]);
-      all.forEach(function(w) {
+      // two slots: current and next
+      for (var i = 0; i < 2; i++) {
         var s = document.createElement('span');
-        s.textContent = w;
+        s.textContent = words[i % words.length];
         inner.appendChild(s);
-      });
-      // size the container to widest word
+      }
       var maxW = 0;
       inner.querySelectorAll('span').forEach(function(s) {
         if (s.offsetWidth > maxW) maxW = s.offsetWidth;
       });
       el.style.width = maxW + 'px';
-      return { inner: inner, total: words.length, current: 0 };
+      return { inner: inner, words: words, current: 0, slots: inner.querySelectorAll('span') };
     }
 
-    function advance(state, words, el) {
-      state.current++;
+    function pickNext(words, current) {
+      var next;
+      do { next = Math.floor(Math.random() * words.length); } while (next === current);
+      return next;
+    }
+
+    function advance(state) {
+      var nextIdx = pickNext(state.words, state.current);
+      var nextSlot = (state.current + 1) % 2;
+      // pre-load the next word into the off-screen slot
+      state.slots[nextSlot].textContent = state.words[nextIdx];
+      // animate down to it
       state.inner.style.transition = 'transform 0.45s cubic-bezier(.4,0,.2,1)';
-      state.inner.style.transform = 'translateY(-' + (state.current * 1.3) + 'em)';
-      if (state.current === words.length) {
-        setTimeout(function() {
-          state.inner.style.transition = 'none';
-          state.inner.style.transform = 'translateY(0)';
-          state.current = 0;
-        }, 460);
-      }
+      state.inner.style.transform = 'translateY(-1.3em)';
+      setTimeout(function() {
+        // snap: put new word in slot 0, reset position
+        state.slots[0].textContent = state.words[nextIdx];
+        state.inner.style.transition = 'none';
+        state.inner.style.transform = 'translateY(0)';
+        state.current = nextIdx;
+      }, 460);
     }
 
     window.addEventListener('load', function() {
-      var el1 = document.getElementById('flip1');
-      var el2 = document.getElementById('flip2');
-      var s1 = buildFlip(el1, words1);
-      var s2 = buildFlip(el2, words2);
+      var s1 = buildFlip(document.getElementById('flip1'), words1);
+      var s2 = buildFlip(document.getElementById('flip2'), words2);
 
-      setInterval(function() { advance(s1, words1, el1); }, 2200);
-      setInterval(function() { advance(s2, words2, el2); }, 2200);
+      setInterval(function() { advance(s1); }, 3200);
+      setInterval(function() { advance(s2); }, 3200);
     });
   })();
 </script>

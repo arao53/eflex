@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>e-flex · Tally integration tests</title>
+<style>
+  body { font-family: monospace; font-size: 13px; padding: 32px; background: #f4f6fa; color: #0a1a2f; }
+  h1 { font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 24px; }
+  .suite { margin-bottom: 32px; }
+  .suite-name { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b7d96; margin-bottom: 8px; }
+  .result { display: flex; align-items: baseline; gap: 10px; padding: 6px 0; border-bottom: 1px solid #d6dee9; }
+  .icon { font-size: 12px; width: 14px; flex-shrink: 0; }
+  .pass .icon::before { content: "✓"; color: #1558ff; }
+  .fail .icon::before { content: "✗"; color: #c0392b; }
+  .label { flex: 1; }
+  .fail .label { color: #c0392b; }
+  .detail { font-size: 10px; color: #6b7d96; }
+  .summary { margin-top: 24px; font-size: 12px; }
+  .summary .pass-count { color: #1558ff; }
+  .summary .fail-count { color: #c0392b; }
+</style>
+</head>
+<body>
+<h1>Tally integration tests</h1>
+<div id="output"></div>
+
+<script>
+(async () => {
+  const results = [];
+
+  function assert(label, condition, detail = '') {
+    results.push({ label, pass: !!condition, detail });
+  }
+
+  // Fetch and parse index.html
+  let doc;
+  try {
+    const html = await fetch('./index.html').then(r => r.text());
+    const parser = new DOMParser();
+    doc = parser.parseFromString(html, 'text/html');
+  } catch (e) {
+    results.push({ label: 'Could not load index.html', pass: false, detail: e.message });
+    render(results);
+    return;
+  }
+
+  // Suite: Script tag
+  const scripts = [...doc.querySelectorAll('script[src]')];
+  const tallyScript = scripts.find(s => s.src.includes('tally.so'));
+  assert('Tally embed script is present', tallyScript, 'Expected <script src="https://tally.so/widgets/embed.js">');
+  assert('Tally script has async attribute', tallyScript?.hasAttribute('async'), 'Script should be async to avoid blocking');
+  assert('Tally script src is correct', tallyScript?.getAttribute('src') === 'https://tally.so/widgets/embed.js',
+    `Got: ${tallyScript?.getAttribute('src')}`);
+
+  // Suite: Button attributes
+  const btn = doc.querySelector('[data-tally-open]');
+  assert('Subscribe button exists', btn, 'No element with data-tally-open found');
+  assert('data-tally-open is "1A2gMl"', btn?.getAttribute('data-tally-open') === '1A2gMl',
+    `Got: "${btn?.getAttribute('data-tally-open')}"`);
+  assert('data-tally-emoji-text is "👋"', btn?.getAttribute('data-tally-emoji-text') === '👋',
+    `Got: "${btn?.getAttribute('data-tally-emoji-text')}"`);
+  assert('data-tally-emoji-animation is "wave"', btn?.getAttribute('data-tally-emoji-animation') === 'wave',
+    `Got: "${btn?.getAttribute('data-tally-emoji-animation')}"`);
+
+  // Suite: Button is interactive
+  assert('Button is a <button> element', btn?.tagName === 'BUTTON', `Got: <${btn?.tagName?.toLowerCase()}>`);
+  assert('Button has visible label text', btn?.textContent?.trim().length > 0,
+    `Text: "${btn?.textContent?.trim()}"`);
+  assert('Button is not disabled', !btn?.hasAttribute('disabled'));
+
+  // Suite: Script placement
+  const head = doc.querySelector('head');
+  const headScripts = [...head.querySelectorAll('script[src]')];
+  assert('Tally script is in <head>', headScripts.some(s => s.src.includes('tally.so')));
+
+  // Suite: No old email form remains
+  const emailInput = doc.querySelector('input[type="email"]');
+  assert('Old email input is removed', !emailInput, 'Email input field should be replaced by Tally popup');
+
+  render(results);
+})();
+
+function render(results) {
+  const out = document.getElementById('output');
+  const pass = results.filter(r => r.pass).length;
+  const fail = results.filter(r => !r.pass).length;
+
+  out.innerHTML = `
+    <div class="suite">
+      <div class="suite-name">Results</div>
+      ${results.map(r => `
+        <div class="result ${r.pass ? 'pass' : 'fail'}">
+          <span class="icon"></span>
+          <span class="label">${r.label}</span>
+          ${!r.pass && r.detail ? `<span class="detail">${r.detail}</span>` : ''}
+        </div>
+      `).join('')}
+    </div>
+    <div class="summary">
+      <span class="pass-count">${pass} passed</span>
+      ${fail ? ` · <span class="fail-count">${fail} failed</span>` : ''}
+      · ${results.length} total
+    </div>
+  `;
+}
+</script>
+</body>
+</html>

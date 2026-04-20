@@ -7,16 +7,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script async src="https://tally.so/widgets/embed.js"></script>
 <style>
   :root {
-    --ink:       #0a1a2f;   /* deepest navy, for type */
-    --ink-soft:  #2a3d59;   /* secondary type */
-    --muted:     #6b7d96;   /* tertiary type */
-    --rule:      #d6dee9;   /* hairlines */
-    --paper:     #f4f6fa;   /* page background */
-    --paper-2:   #eaeef5;   /* card tint */
-    --accent:    #1558ff;   /* electric blue */
-    --accent-2:  #0a3bb8;   /* deeper electric */
+    --ink:       #0a1a2f;
+    --ink-soft:  #2a3d59;
+    --muted:     #6b7d96;
+    --rule:      #d6dee9;
+    --paper:     #f4f6fa;
+    --paper-2:   #eaeef5;
+    --accent:    #1558ff;
+    --accent-2:  #0a3bb8;
+
+    --fs-lg:  clamp(44px, 7vw, 88px);
+    --fs-md:  19px;
+    --fs-sm:  11px;
   }
 
   * { box-sizing: border-box; }
@@ -51,7 +56,7 @@
   }
   .mark {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink);
@@ -117,7 +122,7 @@
     color: var(--ink-soft);
     max-width: 620px;
     margin: 0;
-    text-align: center;
+    text-align: left;
   }
   .word-flip {
     display: inline-block;
@@ -140,6 +145,7 @@
   .word-flip-inner span {
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 1.9em;
     color: var(--accent);
     font-style: italic;
@@ -188,86 +194,33 @@
 
   /* ---------- newsletter ---------- */
   section.news {
-    background: var(--ink);
-    color: #e8eef8;
-    margin: 0 -48px;
-    padding: 72px 48px 80px;
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-  }
-  section.news::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(600px 300px at 85% 10%, rgba(21,88,255,0.35), transparent 60%),
-      radial-gradient(400px 240px at 10% 100%, rgba(21,88,255,0.18), transparent 60%);
-    pointer-events: none;
+    border-top: 1px solid var(--rule);
+    padding: 48px 0 64px;
   }
   section.news .inner {
-    position: relative;
-    max-width: 1024px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 64px;
-    align-items: end;
+    display: flex;
+    align-items: baseline;
+    gap: 48px;
+    flex-wrap: wrap;
   }
-  section.news .eyebrow { color: #7aa0ff; }
-  section.news .eyebrow::before { background: #7aa0ff; }
   section.news h2 {
     font-family: 'Fraunces', serif;
     font-weight: 300;
-    font-size: clamp(32px, 4vw, 48px);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin: 0 0 16px;
-    color: #fff;
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--ink);
   }
   section.news h2 em {
     font-style: italic;
-    color: #7aa0ff;
+    color: var(--accent);
   }
   section.news p {
-    color: #a9b8d1;
-    max-width: 420px;
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .field {
-    display: flex;
-    align-items: stretch;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 2px;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .field:focus-within {
-    border-color: #7aa0ff;
-    background: rgba(255,255,255,0.06);
-  }
-  .field input {
-    flex: 1;
-    background: transparent;
-    border: 0;
-    outline: 0;
-    color: #fff;
-    font-family: 'Fraunces', serif;
-    font-size: 17px;
-    padding: 18px 20px;
-    letter-spacing: -0.005em;
-  }
-  .field input::placeholder {
-    color: #7a8aa6;
-    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 6px 0 0;
   }
   button {
     background: var(--accent);
@@ -277,9 +230,10 @@
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 0 26px;
+    padding: 14px 24px;
     cursor: pointer;
     transition: background 0.2s;
+    white-space: nowrap;
   }
   button:hover { background: var(--accent-2); }
   .formnote {
@@ -287,17 +241,8 @@
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #6b7d96;
+    color: var(--muted);
   }
-  .success {
-    display: none;
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-size: 17px;
-    color: #7aa0ff;
-  }
-  form.sent .field, form.sent .formnote { display: none; }
-  form.sent .success { display: block; }
 
   /* ---------- footer ---------- */
   footer {
@@ -321,8 +266,7 @@
     header.hero { padding-bottom: 96px; }
     .spec { display: none; }
     .team-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    section.news { margin: 0 -24px; padding: 56px 24px 64px; }
-    section.news .inner { grid-template-columns: 1fr; gap: 32px; }
+    section.news .inner { flex-direction: column; gap: 24px; }
     footer { flex-direction: column; gap: 12px; align-items: flex-start; }
   }
 
@@ -366,39 +310,23 @@
 
   <section class="news">
     <div class="inner">
-      <div>
-        <div class="eyebrow">§ 02 — Newsletter</div>
+      <div style="flex:1;min-width:240px;">
         <h2>Occasional notes from the <em>lab</em>.</h2>
-        <p>Technical write-ups, pilot results, and releases. No more than once a quarter. Unsubscribe whenever.</p>
+        <p>Technical write-ups, pilot results, and releases — no more than once a quarter.</p>
       </div>
-
-      <form id="news-form" novalidate>
-        <div class="field">
-          <input type="email" required placeholder="you@facility.com" aria-label="Email address" />
-          <button type="submit">Subscribe →</button>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
+        <button data-tally-open="1A2gMl" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Subscribe →</button>
         <div class="formnote">We'll never share your email.</div>
-        <div class="success">Thanks — you're on the list.</div>
-      </form>
+      </div>
     </div>
   </section>
 
   <footer>
     <div>© e-flex · 2026</div>
-    <div><a href="mailto:hello@e-flex.co">hello@e-flex.co</a></div>
   </footer>
 
 </div>
 
-<script>
-  const form = document.getElementById('news-form');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = form.querySelector('input').value.trim();
-    if (!email || !email.includes('@')) return;
-    form.classList.add('sent');
-  });
-</script>
 <script type="module">
   import { words1, words2 } from './words.js';
 

@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<script async src="https://tally.so/widgets/embed.js"></script>
 <style>
   :root {
     --ink:       #0a1a2f;
@@ -52,7 +51,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 120px;
+    padding-bottom: 96px;
   }
   .mark {
     font-family: 'JetBrains Mono', monospace;
@@ -81,7 +80,7 @@
   /* ---------- hero ---------- */
   header.hero {
     position: relative;
-    padding-bottom: 140px;
+    padding-bottom: 32px;
   }
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
@@ -192,56 +191,40 @@
     color: var(--ink);
   }
 
-  /* ---------- newsletter ---------- */
-  section.news {
+  /* ---------- audience buttons ---------- */
+  .audience-btns {
+    padding: 32px 0 64px;
     border-top: 1px solid var(--rule);
-    padding: 48px 0 64px;
-  }
-  section.news .inner {
     display: flex;
-    align-items: baseline;
-    gap: 48px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
   }
-  section.news h2 {
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
-    font-size: 22px;
-    line-height: 1.25;
-    letter-spacing: -0.015em;
-    margin: 0;
-    color: var(--ink);
-  }
-  section.news h2 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-  section.news p {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.55;
-    margin: 6px 0 0;
-  }
-  button {
+  .audience-btns a {
+    display: block;
+    width: 320px;
     background: var(--accent);
     color: #fff;
     border: 0;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
+    font-size: 13px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    padding: 14px 24px;
+    padding: 18px 32px;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
     transition: background 0.2s;
     white-space: nowrap;
   }
-  button:hover { background: var(--accent-2); }
-  .formnote {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
+  .audience-btns a:hover { background: var(--accent-2); }
+  .audience-prompt {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--ink);
+    margin: 0 0 16px;
   }
 
   /* ---------- footer ---------- */
@@ -308,16 +291,11 @@
     </p>
   </header>
 
-  <section class="news">
-    <div class="inner">
-      <div style="flex:1;min-width:240px;">
-        <h2>Occasional notes from the <em>lab</em>.</h2>
-        <p>Technical write-ups, pilot results, and releases — no more than once a quarter.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
-        <button data-tally-open="1A2gMl">Subscribe →</button>
-      </div>
-    </div>
+  <section class="audience-btns reveal d4">
+    <p class="audience-prompt">Are you a(n)...</p>
+    <a href="industrial.html">Industrial Asset Owner →</a>
+    <a href="municipal.html">Municipal Asset Owner →</a>
+    <a href="interested.html">Interested Party →</a>
   </section>
 
   <footer>
